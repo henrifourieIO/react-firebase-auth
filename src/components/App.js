@@ -6,21 +6,9 @@ import Dashboard from "./Dashboard";
 import { Login } from "./Login";
 import ResetPassword from "./ResetPassword";
 import UpdateProfile from "./UpdateProfile";
+import { app } from '../auth/firebase';
 
 function App() {
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    let authToken = sessionStorage.getItem('Auth Token')
-
-    if (authToken) {
-      navigate('/')
-    }
-    if (!authToken) {
-      navigate('/login')
-    }
-  }, [navigate])
-
   return (
     <Container
       className="d-flex align-items-center justify-content-center"

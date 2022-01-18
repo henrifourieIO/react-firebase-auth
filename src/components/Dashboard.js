@@ -20,15 +20,11 @@ const Dashboard = () => {
   useEffect(() => {
     let authToken = sessionStorage.getItem("Auth Token");
 
-    if (auth.currentUser === null) {
+    if (!authToken) {
       navigate("/login");
     }
-    if (authToken) {
-      navigate("/");
-    } else {
-      navigate("/login");
-    }
-  }, [auth.currentUser, navigate]);
+    
+  }, [navigate]);
 
   return (
     <>
