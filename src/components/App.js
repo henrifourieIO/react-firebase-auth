@@ -5,7 +5,6 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import { Login } from "./Login";
 import ResetPassword from "./ResetPassword";
-import { app } from '../auth/firebase';
 import UpdateProfile from "./UpdateProfile";
 
 function App() {
@@ -20,7 +19,7 @@ function App() {
     if (!authToken) {
       navigate('/login')
     }
-  }, [])
+  }, [navigate])
 
   return (
     <Container

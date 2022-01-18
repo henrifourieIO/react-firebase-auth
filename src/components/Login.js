@@ -2,8 +2,6 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import React, { useRef, useState } from "react";
 import { Form, Button, Card, Alert } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 export const Login = () => {
   const emailRef = useRef();

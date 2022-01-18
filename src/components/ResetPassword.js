@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 
 const ResetPassword = () => {
   const emailRef = useRef();
-  const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -25,7 +24,6 @@ const ResetPassword = () => {
       <Card className="p-4">
         <h2 className="text-center mb-3">Reset Password</h2>
         {!success ? <p className="text-center mb-3">Please Type in your email to reset your password.</p> : null}
-        {error && <Alert variant="danger">{error}</Alert>}
         {success && <Alert variant="success">{success}</Alert>}
         {!success ? <Form
           onSubmit={(e) => {

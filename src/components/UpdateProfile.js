@@ -12,7 +12,6 @@ const UpdateProfile = () => {
   const emailRef = useRef();
   const credEmailRef = useRef();
   const credPasswordRef = useRef();
-  const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [show, setShow] = useState("");
   const [loading, setLoading] = useState(false);
@@ -59,7 +58,6 @@ const UpdateProfile = () => {
             Please Type in your new email address.
           </p>
         ) : null}
-        {error && <Alert variant="danger">{error}</Alert>}
         {success && <Alert variant="success">{success}</Alert>}
         {!success ? (
           <Form
