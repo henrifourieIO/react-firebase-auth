@@ -1,43 +1,48 @@
 import React, { useRef, useState } from "react";
-import { resetPassword } from "../auth/resetPassword";
 import { Form, Button, Card, Alert } from "react-bootstrap";
-import { changeEmail } from "../auth/changeEmail";
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
+import { Link } from 'react-router-dom';
 
 const ResetPassword = () => {
   const emailRef = useRef();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    setLoading(true);
-    try {
-      setError("");
-      await changeEmail(emailRef.current.value)
-    } catch {
-      setError("Failed to change email");
-    }
-
-    setLoading(false);
-  };
+  const handleSubmit = async () => {
+    setLoading(true)
+    let auth = getAuth();
+    await sendPasswordResetEmail(auth, emailRef.current.value).then(() => {
+      setSuccess('Password Reset email sent, check your email')
+    }).catch((error) => {
+      console.log(error.code)
+    })
+    setLoading(false)
+  }
 
   return (
     <>
-      {error && <Alert variant="danger">{error}</Alert>}
-      <Form onSubmit={(e) => handleSubmit(e)}>
-        <Form.Group id="email">
-          <Form.Label>New Email: </Form.Label>
-          <Form.Control type="email" ref={emailRef} required />
-        </Form.Group>
-        <Button disabled={loading} className="w-100 mt-4" type="submit">
-          Change Email
-        </Button>
-      </Form>
-
-      <Button variant="link" onClick={() => resetPassword()}>
-        Reset Password
-      </Button>
+      <Card className="p-4">
+        <h2 className="text-center mb-3">Reset Password</h2>
+        {!success ? <p className="text-center mb-3">Please Type in your email to reset your password.</p> : null}
+        {error && <Alert variant="danger">{error}</Alert>}
+        {success && <Alert variant="success">{success}</Alert>}
+        {!success ? <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+        >
+          <Form.Group id="email">
+            <Form.Label>Email</Form.Label>
+            <Form.Control type="email" ref={emailRef} required />
+          </Form.Group>
+          <Button disabled={loading} className="w-100 mt-4" type="submit">
+            Reset
+          </Button>
+          <Link to="/login" className="text-center">Go Back</Link>
+        </Form> : <Link to="/login" className="text-center">Go Back</Link>}
+      </Card>
     </>
   );
 };

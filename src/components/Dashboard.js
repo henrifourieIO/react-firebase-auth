@@ -1,27 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Button, Alert } from "react-bootstrap";
-import { auth, user } from "../auth/firebase";
 import { Link, useNavigate } from "react-router-dom";
-import { logout } from '../auth/logout';
-import ResetPassword from "./ResetPassword";
-
+import { getAuth, signOut } from "firebase/auth";
 
 const Dashboard = () => {
   const [error, setError] = useState("");
-    const navigate = useNavigate()
+  const navigate = useNavigate();
+  var auth = getAuth();
 
   async function handleLogout() {
-    setError('')
-    try {
-        await logout()
-        navigate('/login')
-    }
-    catch {
-        setError('Failed to logout')
-    }
+    setError("");
 
-    console.log('logged out')
+    signOut(auth);
+    sessionStorage.removeItem("Auth Token");
+    navigate("/login");
+    console.log("logged out");
   }
+
+  useEffect(() => {
+    let authToken = sessionStorage.getItem("Auth Token");
+
+    if (auth.currentUser === null) {
+      navigate("/login");
+    }
+    if (authToken) {
+      navigate("/");
+    } else {
+      navigate("/login");
+    }
+  }, [auth.currentUser, navigate]);
 
   return (
     <>
@@ -31,7 +38,7 @@ const Dashboard = () => {
           {error && <Alert variant="danger">{error}</Alert>}
           <p>
             <strong>Email: </strong>
-            {user ? user.email : null}
+            {auth.currentUser ? auth.currentUser.email : "none"}
           </p>
           <Link to="/update-profile" className="btn btn-primary w-100 mt-3">
             Update Profile
@@ -43,7 +50,6 @@ const Dashboard = () => {
           Log Out
         </Button>
       </div>
-      <ResetPassword />
     </>
   );
 };

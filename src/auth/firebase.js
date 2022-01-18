@@ -11,6 +11,4 @@ const config = {
 };
 
 export const app = initializeApp(config);
-export const auth = getAuth();
-export const user = auth ? auth.currentUser : undefined;
 

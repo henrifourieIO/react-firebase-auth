@@ -1,7 +1,6 @@
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import React, { useRef, useState } from "react";
 import { Form, Button, Card, Alert } from "react-bootstrap";
-import { signup } from "../auth/signUp";
-import { auth } from "../auth/firebase";
 import { Link, useNavigate } from "react-router-dom";
 
 export const Signup = () => {
@@ -10,24 +9,35 @@ export const Signup = () => {
   const passwordConfirmRef = useRef();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setLoading(true);
+    const auth = getAuth();
 
     if (passwordRef.current.value !== passwordConfirmRef.current.value) {
       return setError("Passwords don't match");
+    } else {
+      createUserWithEmailAndPassword(
+        auth,
+        emailRef.current.value,
+        passwordRef.current.value
+      )
+        .then((res) => {
+          console.log(res);
+          sessionStorage.setItem("Auth Token", res._tokenResponse.refreshToken);
+          navigate("/");
+        })
+        .catch((error) => {
+          if (error.code === "auth/email-already-in-use") {
+            setError("Email already in use");
+          }
+          else {
+            setError('Failed to create account')
+          }
+        });
     }
-
-    try {
-      setError("");
-      setLoading(true);
-      await signup(emailRef.current.value, passwordRef.current.value);
-      navigate('/')
-    } catch {
-      setError("Failed to create an account");
-    }
-
     setLoading(false);
   }
 
@@ -35,7 +45,6 @@ export const Signup = () => {
     <>
       <Card className="p-4">
         <h2 className="text-center mb-4">Sign Up</h2>
-        {auth.currentUser && auth.currentUser.email}
         {error && <Alert variant="danger">{error}</Alert>}
         <Form onSubmit={(e) => handleSubmit(e)}>
           <Form.Group id="email">
